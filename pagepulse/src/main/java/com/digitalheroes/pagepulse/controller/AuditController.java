@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5173" , "https://pagepulse-digital-heores.vercel.app"})
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+})
 @RequestMapping("/api/audit")
 @RequiredArgsConstructor
 public class AuditController {
