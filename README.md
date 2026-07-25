@@ -153,7 +153,14 @@ Reason
 
 Fetching a webpage and analyzing its contents are independent concerns. Separating them makes each component reusable and allows future enhancements (such as SEO scoring or broken-link analysis) without changing the networking logic.
 
-3. DTO-Based API Communication
+3. default unhandled exception in the app 
+Simply hitting a path that doesn't exist, like the bare / root — falls into the generic @ExceptionHandler(Exception.class) catch-all and returns a 500 Internal Server Error. That's misleading: a 500 should mean the server attempted the request and something went wrong internally, but "you asked for a route that was never defined" is a client-side mistake, not a server failure — it should be a 404 Not Found.
+
+The fix: Added a dedicated handler for Spring's NoResourceFoundException that returns a proper 404 with a helpful message pointing at the actual endpoint (POST /api/audit), instead of letting it fall through to the generic 500 handler.
+
+Reasoning: HTTP status codes are a contract with the API consumer — a 4xx tells the caller "you did something to cause this" (fixable on their end), while a 5xx tells them "we broke, not your fault" (nothing they can do about it). Conflating the two makes an API harder to reason about and debug: a monitoring tool watching for 500s would get falsely alarmed every time someone just hits the wrong path, when nothing is actually broken. Keeping the generic Exception.class handler as a last-resort safety net (for truly unexpected failures) while carving out specific handlers for known, expected non-error cases like this one keeps that signal meaningful.
+
+4. DTO-Based API Communication
 
 The application uses dedicated DTOs (AuditRequest, AuditResponse, AnalysisDto, and FetchResult) rather than exposing internal classes directly.
 
@@ -165,7 +172,7 @@ DTOs provide a stable contract between the frontend and backend, prevent exposin
 
 ## 📷 Screenshots
 
-### Home Page
+### Analysis Result
 
 > Add a screenshot here
 
@@ -175,22 +182,11 @@ frontend/assets/home.png
 <img width="725" height="446" alt="image" src="https://github.com/user-attachments/assets/2748f08b-671b-4807-b76b-75916313700d" />
 
 ---
-
-### Analysis Result
-
-
-```
-frontend/assets/result.png
-```
-
----
-
 ## 🌍 Live Demo
-
 Frontend(vercel)
 
 ```
-https://pagepulse-digital-heores.vercel.app/
+https://pagepulse-digital-heores.vercel.app
 ```
 
 Backend(render)
@@ -225,7 +221,7 @@ This project follows several software engineering best practices:
 * Reusable React Components
 
 
-## 👨‍💻 Author
+## Author
 
 **Rahul Goswami**
 
@@ -235,7 +231,7 @@ GitHub: https://github.com/rahulcod-3333
 
 ---
 
-## 🙏 Acknowledgements
+## Acknowledgements
 
 This project was developed as part of the **Digital Heroes Software Engineering Training Task**.
 
@@ -247,3 +243,7 @@ Special thanks to the open-source communities behind:
 * Jsoup
 * Vite
 * Lombok
+---
+ ## AI usage note
+  I have used ai to write the css code (for design purposes) and also used it to learn the html parser.Fixed the IllegalArgumentException vs MalformedURLException bug in URL validation.
+---
