@@ -16,29 +16,6 @@ A modern website auditing tool built with **Spring Boot**, **React**, and **Jsou
 * 📚 Calculate total word count
 * ❌ Graceful error handling for invalid URLs and connection failures
 * 📱 Responsive React + Tailwind CSS interface
-
----
-
-## 🏗️ Architecture
-
-```text
-                React Frontend
-                       │
-                       ▼
-              Spring Boot REST API
-                       │
-          ┌────────────┴────────────┐
-          ▼                         ▼
-    WebFetcher               HtmlAnalyzer
-          │                         │
-          └────────────┬────────────┘
-                       ▼
-                AuditService
-                       │
-                       ▼
-                 JSON Response
-```
-
 ---
 
 ## 🛠️ Tech Stack
@@ -81,7 +58,7 @@ git clone <YOUR_GITHUB_REPOSITORY>
 Navigate to the backend:
 
 ```bash
-cd backend
+cd pagepulse
 ```
 
 Run the application:
@@ -157,6 +134,32 @@ http://localhost:5173
   "wordCount": 1587
 }
 ```
+Design Decisions
+1. Layered Architecture
+
+The backend is divided into Controller, Service, Analyzer, and Fetcher layers instead of placing all logic inside the controller.
+
+Reason
+
+This keeps responsibilities separated, making the application easier to understand, test, and maintain. The controller only handles HTTP requests, while the service coordinates the workflow and specialized components perform fetching and HTML analysis.
+
+2. Separate Web Fetching from HTML Analysis
+
+The application uses two dedicated components:
+
+WebFetcher – retrieves the webpage and measures response time.
+HtmlAnalyzer – extracts information from the HTML document.
+Reason
+
+Fetching a webpage and analyzing its contents are independent concerns. Separating them makes each component reusable and allows future enhancements (such as SEO scoring or broken-link analysis) without changing the networking logic.
+
+3. DTO-Based API Communication
+
+The application uses dedicated DTOs (AuditRequest, AuditResponse, AnalysisDto, and FetchResult) rather than exposing internal classes directly.
+
+Reason
+
+DTOs provide a stable contract between the frontend and backend, prevent exposing implementation details, and make it easier to evolve the backend without breaking the client application.
 
 ---
 
@@ -175,7 +178,6 @@ frontend/assets/home.png
 
 ### Analysis Result
 
-> Add a screenshot here
 
 ```
 frontend/assets/result.png
@@ -222,20 +224,6 @@ This project follows several software engineering best practices:
 * Global Exception Handling
 * Reusable React Components
 
----
-
-## 🚀 Future Improvements
-
-* SEO Score
-* Lighthouse Integration
-* Broken Link Detection
-* SSL Certificate Information
-* Accessibility Score
-* Page Size Analysis
-* Internal vs External Link Analysis
-* Downloadable PDF Report
-
----
 
 ## 👨‍💻 Author
 
