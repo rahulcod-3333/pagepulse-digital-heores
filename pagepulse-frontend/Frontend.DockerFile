@@ -16,7 +16,7 @@ COPY . .
 #   docker build --build-arg VITE_API_BASE_URL=https://your-api.com .
 # Defaults to localhost for a purely local docker run.
 ARG VITE_API_BASE_URL=http://localhost:8080
-ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ENV VITE_API_URL=$VITE_API_URL
 
 RUN npm run build
 
